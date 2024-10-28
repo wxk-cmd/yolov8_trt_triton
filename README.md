@@ -16,7 +16,11 @@ This repository provides an ensemble model to combine a YoloV8 model exported fr
 1.Export a model to ONNX format:  
     ```yolo export model=yolov8n.pt format=onnx dynamic=True opset=16```   
 2.Inside the container of Triton Inference Server, use the trtexec tool to convert the YOLOv8 ONNX model to a TensorRT engine file(you can use the trtexec tool from tritonserver:24.07-py3).   
-    ```/usr/src/tensorrt/bin/trtexec --onnx=/path/to/your/folder/model.onnx --saveEngine=/models/yolov8.engine --fp16 --shapes=images:1x3x640x640```     
+    ```/usr/src/tensorrt/bin/trtexec --onnx=/model.onnx --saveEngine=yolov8.engine \
+  --fp16 \
+  --minShapes=images:1x3x640x640 \
+  --optShapes=images:8x3x640x640 \
+  --maxShapes=images:64x3x640x640```     
 2.Rename the model file to and place it under the directory (see directory structure above).```model.plan /models/yolov8_trt/1```     
 3.(Optional): Update the Score and NMS threshold in ```yolov8_trt.py```     
 4.(Optional): Update the models/yolov8_trt/config.pbtxt file if your input resolution has changed    
